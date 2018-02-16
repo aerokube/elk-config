@@ -1,0 +1,49 @@
+version: '3'
+
+networks:
+  elk:
+
+services:
+
+  elasticsearch:
+    environment:
+      http.host: 0.0.0.0
+      transport.host: 127.0.0.1
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1
+    networks:
+      elk: null
+    ports:
+    - 9200:9200
+    restart: unless-stopped
+    volumes:
+    - elasticsearch:/usr/share/elasticsearch/data:rw
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash-oss:6.2.1
+    depends_on:
+    - elasticsearch
+    networks:
+      elk: null
+    ports:
+    - 5044:5044
+    restart: unless-stopped
+    volumes:
+    - /etc/logstash/pipeline:/usr/share/logstash/pipeline:ro
+
+  kibana:
+    depends_on:
+    - elasticsearch
+    environment:
+      ELASTICSEARCH_PASSWORD: changeme
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_USERNAME: elastic
+    image: docker.elastic.co/kibana/kibana-oss:6.2.1
+    networks:
+      elk: null
+    ports:
+    - 5601:5601
+    restart: unless-stopped
+
+volumes:
+  elasticsearch:
+    driver: local

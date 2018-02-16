@@ -1,0 +1,55 @@
+input {
+    beats {
+        port => "5044"
+    }
+}
+filter {
+    if [docker][container][name] == "ggr" {
+        grok {
+            match => {
+                "message" => "%{YEAR:year}\/%{MONTHNUM:month}\/%{MONTHDAY:day} %{TIME:time} \[(-|%{NONNEGINT:request_id})\] \[(-|%{NUMBER:duration}s)\] \[%{NOTSPACE:status}\] \[(-|%{NOTSPACE:user})\] \[(-|%{IPORHOST:user_host})\] \[(-|%{NOTSPACE:browser})\] \[(-|%{NOTSPACE:browser_host})\] \[(-|%{NOTSPACE:session_id})\] \[(-|%{POSINT:counter})\] \[(-|%{DATA:msg})\]"
+            }
+        }
+        mutate {
+            remove_field => [ "message" ]
+        }
+    } else if [docker][container][name] == "selenoid" {
+        grok {
+            match => {
+                "message" => "%{YEAR:year}\/%{MONTHNUM:month}\/%{MONTHDAY:day} %{TIME:time} \[(-|%{NONNEGINT:request_id})\] \[%{NOTSPACE:status}\] \[%{DATA:data}\]( \[%{DATA:optional_data}\])?( \[%{NUMBER:duration}s\])?"
+            }
+        }
+        mutate {
+            remove_field => [ "message" ]
+        }
+    }
+    mutate {
+        remove_field => [ "beat", "source", "prospector", "tags", "stream" ]
+        convert => {
+            "request_id" => "integer"
+            "duration" => "float"
+            "counter" => "integer"
+        }
+    }
+}
+output {
+    # Uncomment the following line to send all processed log entries to Logstash log file
+    #stdout { codec => rubydebug }
+    if [docker][container][name] == "ggr" {
+        elasticsearch {
+        hosts => "elasticsearch:9200"
+        index => "ggr-%{+YYYY.MM.dd}"
+        }
+
+    } else if [docker][container][name] == "selenoid" {
+        elasticsearch {
+        hosts => "elasticsearch:9200"
+        index => "selenoid-%{+yyyy.mm.dd}"
+        }
+    } else {
+        elasticsearch {
+        hosts => "elasticsearch:9200"
+        index => "browsers-%{+yyyy.mm.dd}"
+        }
+    }
+}
