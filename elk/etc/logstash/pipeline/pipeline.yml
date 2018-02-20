@@ -44,12 +44,12 @@ output {
     } else if [docker][container][name] == "selenoid" {
         elasticsearch {
         hosts => "elasticsearch:9200"
-        index => "selenoid-%{+yyyy.mm.dd}"
+        index => "selenoid-%{+YYYY.MM.dd}"
         }
     } else {
         elasticsearch {
         hosts => "elasticsearch:9200"
-        index => "browsers-%{+yyyy.mm.dd}"
+        index => "browsers-%{+YYYY.MM.dd}"
         }
     }
 }
