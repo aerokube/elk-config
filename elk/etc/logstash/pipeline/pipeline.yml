@@ -37,19 +37,19 @@ output {
     #stdout { codec => rubydebug }
     if [docker][container][name] == "ggr" {
         elasticsearch {
-        hosts => "elasticsearch:9200"
-        index => "ggr-%{+YYYY.MM.dd}"
+            hosts => "elasticsearch:9200"
+            index => "ggr-%{+YYYY.MM.dd}"
         }
 
     } else if [docker][container][name] == "selenoid" {
         elasticsearch {
-        hosts => "elasticsearch:9200"
-        index => "selenoid-%{+YYYY.MM.dd}"
+            hosts => "elasticsearch:9200"
+            index => "selenoid-%{+YYYY.MM.dd}"
         }
     } else {
         elasticsearch {
-        hosts => "elasticsearch:9200"
-        index => "browsers-%{+YYYY.MM.dd}"
+            hosts => "elasticsearch:9200"
+            index => "browsers-%{+YYYY.MM.dd}"
         }
     }
 }
