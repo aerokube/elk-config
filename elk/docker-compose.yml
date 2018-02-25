@@ -3,6 +3,10 @@ version: '3'
 networks:
   elk:
 
+volumes:
+  elasticsearch:
+    driver: local
+
 services:
 
   elasticsearch:
@@ -43,7 +47,3 @@ services:
     ports:
     - 5601:5601
     restart: unless-stopped
-
-volumes:
-  elasticsearch:
-    driver: local
