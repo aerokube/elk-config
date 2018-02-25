@@ -32,7 +32,7 @@ services:
     - 5044:5044
     restart: unless-stopped
     volumes:
-    - /etc/logstash/pipeline:/usr/share/logstash/pipeline:ro
+    - ./etc/logstash/pipeline:/usr/share/logstash/pipeline:ro
 
   kibana:
     depends_on:
