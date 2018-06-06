@@ -7,7 +7,7 @@ filter {
     if [docker][container][name] == "ggr" {
         grok {
             match => {
-                "message" => "%{YEAR:year}\/%{MONTHNUM:month}\/%{MONTHDAY:day} %{TIME:time} \[(-|%{NONNEGINT:request_id})\] \[(-|%{NUMBER:duration}s)\] \[%{NOTSPACE:status}\] \[(-|%{NOTSPACE:user})\] \[(-|%{IPORHOST:user_host})\] \[(-|%{NOTSPACE:browser})\] \[(-|%{NOTSPACE:browser_host})\] \[(-|%{NOTSPACE:session_id})\] \[(-|%{POSINT:counter})\] \[(-|%{DATA:msg})\]"
+                "message" => "%{YEAR:year}\/%{MONTHNUM:month}\/%{MONTHDAY:day} %{TIME:time} \[(-|%{NONNEGINT:request_id})\] \[(-|%{NUMBER:duration}s)\] \[%{NOTSPACE:status}\] \[(-|%{NOTSPACE:user})\] \[(-|%{IPORHOST:user_host})\] \[(-|%{DATA:browser})\] \[(-|%{NOTSPACE:browser_host})\] \[(-|%{NOTSPACE:session_id})\] \[(-|%{POSINT:counter})\] \[(-|%{DATA:msg})\]"
             }
         }
         mutate {
